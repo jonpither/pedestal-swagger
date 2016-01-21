@@ -76,7 +76,7 @@
 (definition/defroutes content-negotiation-routes
   [["t" :test
     ["/" ^:interceptors [multi-content-type-response]
-     {:get (vary-meta get-handler assoc :produces ["application/ducks"])}]]])
+     {:get (vary-meta get-handler assoc-in [::doc/doc :produces] ["application/ducks"])}]]])
 
 (deftest builds-produces-meta-properly
   (let [paths {"/"
