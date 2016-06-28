@@ -41,7 +41,13 @@
                                                       :body-params  :body
                                                       :form-params  :formData
                                                       :headers      :header})))
-      (update :responses (fn [m] (map-vals #(set/rename-keys % {:body    :schema}) m)))))
+      (update :responses (fn [m] (map-vals #(set/rename-keys % {:body :schema}) m)))))
+
+(defn- route-defaults [route]
+  (when-let [handler-name (some-> route :interceptors last :name)]
+    {:operationId (if (namespace handler-name)
+                    (str (namespace handler-name) "/" (name handler-name))
+                    (name handler-name))}))
 
 (s/defschema SwaggerPaths
   {s/Str {s/Keyword spec/Operation}})
@@ -54,12 +60,12 @@
   (apply merge-with merge
          (for [{:keys [path method] :as route} route-table
                :let [docs (find-docs route)
-                     operation-id (some-> route :interceptors last :name name)]
+                     defaults (route-defaults route)]
                :when (documented-handler? route)]
            (linked/map path
                        (linked/map method
                                    (ring-keys->swagger
-                                    (apply deep-merge :into (cons {:operationId operation-id} docs))))))))
+                                    (apply deep-merge :into (cons defaults docs))))))))
 
 (defn with-swagger
   "Attaches swagger information as a meta key to each documented route. The

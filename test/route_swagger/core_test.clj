@@ -122,7 +122,7 @@
                  :responses   {200      {:schema {:status s/Str}}
                                :default {:schema  {:result [s/Str]}
                                          :headers {(req "Location") s/Str}}}
-                 :operationId "get-handler"}}
+                 :operationId "route-swagger.core-test/get-handler"}}
                "/x/:id"
                {:put
                 {:description "Requires id on path"
@@ -131,7 +131,7 @@
                                :header {(req "auth") s/Str}
                                :body   {:name s/Keyword}}
                  :responses   {}
-                 :operationId "put-handler"}
+                 :operationId "route-swagger.core-test/put-handler"}
                 :delete
                 {:description "Requires id on path"
                  :summary     "Delete resource with id"
